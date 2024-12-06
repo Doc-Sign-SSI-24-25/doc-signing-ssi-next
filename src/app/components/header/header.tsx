@@ -15,6 +15,9 @@ export default function Header() {
                     <li className="nav-item">
                         <a className="nav-link" href="/sign_document">Sign Document</a>
                     </li>
+                    <li className="nav-item">
+                        <a className="nav-link" href="/key_and_certificate">My Keys and Certificate</a>
+                    </li>
                 </ul>
             </div>
             {/* <div className="container flags">

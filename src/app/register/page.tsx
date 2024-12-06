@@ -1,6 +1,6 @@
 'use client';
 import { useState } from "react";
-import Button from "../components/button/button";
+import Button from "../components/ui/button";
 import { nameValidator, passwordValidator, emailValidator, hashPassword } from "../utils/util";
 
 export default function Register() {

@@ -1,9 +1,8 @@
 'use client';
 import { useState } from "react";
+import Button from "../components/ui/button";
 
 export default function Page() {
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
     const [message, setMessage] = useState('');
 
     function toggleInvalidInput(id: string, invalid: boolean) {
@@ -15,36 +14,9 @@ export default function Page() {
         }
     }
 
-    function changeName(event: React.ChangeEvent<HTMLInputElement>) {
-        var regex = /^[a-zA-Z\s]*$/;
-        var result = regex.test(event.target.value);
-        if (!result) {
-            toggleInvalidInput('name', true);
-        } else {
-            toggleInvalidInput('name', false);
-        }
-        setName(event.target.value);
-    }
-
-    function changeEmail(event: React.ChangeEvent<HTMLInputElement>) {
-        var regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-        var result = regex.test(event.target.value);
-        if (!result) {
-            toggleInvalidInput('email', true);
-        } else {
-            toggleInvalidInput('email', false);
-        }
-        setEmail(event.target.value);
-    }
 
     async function createKey() {
         setMessage('');
-        var result = document.getElementById('result');
-        // Validação básica
-        if (!name || !email) {
-            setMessage('Name and email are required');
-            return;
-        }
 
         try {
             var res = await fetch('http://localhost:8000/create_key', {
@@ -52,7 +24,7 @@ export default function Page() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ name: name, email: email })
+                body: JSON.stringify({ user_id: localStorage.getItem('token') })
             });
 
             if (!res.ok) {
@@ -62,13 +34,20 @@ export default function Page() {
             }
 
             const json = await res.json();
+            console.log(json);
 
             // Cria um arquivo com a chave privada
-            var file = new File([json.private_key], json.filename, { type: 'text/plain' });
-            var a = document.getElementById('btn-result') as HTMLAnchorElement;
-            a.href = URL.createObjectURL(file);
-            a.download = json.filename;
-            a.classList.remove('d-none');
+            var private_key = new File([json.data.private_key], json.data.filename, { type: 'text/plain' });
+            var public_key = new File([json.data.public_key], json.data.filename + '.pub', { type: 'text/plain' });
+            var pr_a = document.getElementById('btn-result-private') as HTMLAnchorElement;
+            var pu_a = document.getElementById('btn-result-public') as HTMLAnchorElement;
+            pr_a.href = URL.createObjectURL(private_key);
+            pu_a.href = URL.createObjectURL(private_key);
+            pr_a.download = json.data.filename_private;
+            pu_a.download = json.data.filename_public;
+            pr_a.classList.remove('d-none');
+            pu_a.classList.remove('d-none');
+            setMessage(json.message);
         } catch (error) {
             setMessage(`${error}`);
             console.error('Error:', error);
@@ -77,21 +56,12 @@ export default function Page() {
     return (
         <>
             <h1>Generate Key</h1>
-            <form id="form">
-                <div className="mb-3">
-                    <label htmlFor="name" className="form-label">Name</label>
-                    <input type="text" className="form-control" id="name" name="name" aria-describedby="nameHelp" value={name} onChange={changeName} />
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="email" className="form-label">Email</label>
-                    <input type="email" className="form-control" id="email" name="email" aria-describedby="emailHelp" value={email} onChange={changeEmail} />
-                </div>
-                <button type="button" onClick={createKey} className="btn btn-primary">Submit</button>
-            </form>
+            <Button onClick={createKey}>Generate Key</Button>
 
             <div id="result">
-                <a type="button" href="#" className="btn btn-outline-dark my-3 d-none" id="btn-result">Download Key</a>
-                <p className="text-danger "> {message}</p>
+                <a type="button" href="#" className="btn btn-outline-dark my-3 d-none" id="btn-result-private">Download Private Key</a>
+                <a type="button" href="#" className="btn btn-outline-dark my-3 d-none" id="btn-result-public">Download Public Key</a>
+                <p className="text-info"> {message}</p>
             </div>
         </>
     );

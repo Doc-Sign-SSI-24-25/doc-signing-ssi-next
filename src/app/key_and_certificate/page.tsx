@@ -1,13 +1,21 @@
 'use client'
+import Button from '../components/ui/button';
 import styles from './page.module.css'
 import { useEffect, useState } from "react";
+
+type ReceivedFile = {
+    filename: string;
+    data: any;
+}
+
 export default function KeyAndCertificate() {
-    const [key, setKey] = useState({ "filename": null, "data": null });
-    const [certificate, setCertificate] = useState({ "filename": null, "data": null });
+    const [publicKey, setPublicKey] = useState<ReceivedFile>({ filename: '', data: null });
+    const [privateKey, setPrivateKey] = useState<ReceivedFile>({ filename: '', data: null });
+    const [certificate, setCertificate] = useState<ReceivedFile>({ filename: '', data: null });
     const getKey = async () => {
         var user_id = sessionStorage.getItem("token");
         console.log(user_id);
-        var res = await fetch("http://localhost:8000/get_key", {
+        var res = await fetch("http://localhost:8000/get_keys", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -18,7 +26,9 @@ export default function KeyAndCertificate() {
         });
         var json = await res.json();
         if (res.status === 200) {
-            setKey(json);
+            var data = json.data;
+            setPrivateKey({ filename: data.private_key_filename, data: data.private_key });
+            setPublicKey({ filename: data.public_key_filename, data: data.public_key });
         } else {
             alert(json.detail);
         }
@@ -36,28 +46,47 @@ export default function KeyAndCertificate() {
         });
         var json = await res.json();
         if (res.status === 200) {
-            setCertificate(json);
+            var data = json.data;
+            setCertificate({ filename: data.certificate_filename, data: data.certificate });
         } else {
             alert(json.detail);
         }
     }
 
+    const downloadFile = (file: ReceivedFile) => {
+        var _file = new File([file.data], file.filename, { type: 'text/plain' });
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(_file);
+        a.download = file.filename;
+        a.click();
+        a.remove();
+    }
+
+
     useEffect(() => {
         getKey();
-        // getCertificate();
+        getCertificate();
     }, []);
 
     return (
         <div className="d-flex justify-content-around gap-2">
             <div className="card">
                 <div className="card-header text-center">
-                    <p className="h3">Key</p>
+                    <p className="h3">Keys</p>
 
                 </div>
                 <div className="card-body">
-                    {key.data ?
-                        <a href='#' download={key.filename} className="btn btn-primary">Download</a> :
-                        "No key found"
+                    {publicKey.data ?
+                        <Button onClick={() => downloadFile(publicKey)}
+                            className="btn btn-primary mx-3">
+                            Download Public Key</Button> :
+                        <p>No public key found</p>
+                    }
+                    {
+                        privateKey.data ?
+                            <Button onClick={() => downloadFile(privateKey)}
+                                className="btn btn-primary mx-3">
+                                Download Private Key</Button> : <p>No private key found</p>
                     }
                 </div>
             </div>
@@ -70,8 +99,10 @@ export default function KeyAndCertificate() {
 
                 </div>
                 <div className="card-body">
-                    {key.data && certificate.data ?
-                        <a href='#' download="key_and_certificate.zip" className="btn btn-primary">Download</a> :
+                    {certificate.data && certificate.data ?
+                        <Button onClick={() => downloadFile(certificate)}
+                            className="btn btn-primary mx-3">
+                            Download Certificate</Button> :
                         "No Certificate found"}
                 </div>
             </div>

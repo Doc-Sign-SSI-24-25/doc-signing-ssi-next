@@ -1,4 +1,4 @@
-export default function Input(props : any){
+export default function Input(props : any) {
     return (
         <div className="form-group">
             <label htmlFor={props.id} className="form-label">{props.label}</label>

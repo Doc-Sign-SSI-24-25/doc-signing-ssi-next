@@ -2,10 +2,10 @@ import { MouseEventHandler } from "react";
 
 export default function Button({
     children,
-    onClick,
-    className,
+    onClick,    
     disabled,
     id,
+    className = "",
     type = "button",
     style = "primary",
     outline = false,
