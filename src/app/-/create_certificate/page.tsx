@@ -1,6 +1,7 @@
 'use client';
 import { useState } from "react";
-import Button from "../components/ui/button";
+import Button from "../../components/ui/button";
+import { getUserData } from "@docsign/services/userServices";
 
 export default function CreateCertificate() {
     const [message, setMessage] = useState('');
@@ -14,7 +15,7 @@ export default function CreateCertificate() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ user_id: localStorage.getItem('token') })
+                body: JSON.stringify({ user_id: getUserData().uid })
             });
 
             if (!res.ok) {

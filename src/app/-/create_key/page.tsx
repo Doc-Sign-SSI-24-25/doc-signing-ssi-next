@@ -1,6 +1,7 @@
 'use client';
 import { useState } from "react";
-import Button from "../components/ui/button";
+import Button from "../../components/ui/button";
+import { getUserData } from "@docsign/services/userServices";
 
 export default function Page() {
     const [message, setMessage] = useState('');
@@ -24,7 +25,7 @@ export default function Page() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ user_id: localStorage.getItem('token') })
+                body: JSON.stringify({ user_id: getUserData().uid })
             });
 
             if (!res.ok) {
@@ -42,7 +43,7 @@ export default function Page() {
             var pr_a = document.getElementById('btn-result-private') as HTMLAnchorElement;
             var pu_a = document.getElementById('btn-result-public') as HTMLAnchorElement;
             pr_a.href = URL.createObjectURL(private_key);
-            pu_a.href = URL.createObjectURL(private_key);
+            pu_a.href = URL.createObjectURL(public_key);
             pr_a.download = json.data.filename_private;
             pu_a.download = json.data.filename_public;
             pr_a.classList.remove('d-none');

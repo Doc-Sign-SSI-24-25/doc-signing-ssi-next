@@ -3,4 +3,15 @@ type ReceivedFile = {
     document: ArrayBuffer | string;
 }
 
-export type { ReceivedFile };
+type ApiResponse = {
+    message: string;
+    success: boolean | null;
+    data: any;
+}
+
+type User = {
+    uid: string;
+    name: string;
+}
+
+export type { ReceivedFile, ApiResponse, User };

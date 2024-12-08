@@ -1,38 +1,33 @@
 'use client'
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Input from "../components/ui/input";
-import { hashPassword } from "../utils/util";
 import Button from "../components/ui/button";
-
+import { useRouter } from "next/navigation";
+import { getToken, login, saveToken, saveUserData } from "@docsign/services/authServices";
 export default function Login() {
     const [detail, setDetail] = useState("");
-
+    const router = useRouter();
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setDetail("");
         const form = event.currentTarget;
         const email = form.email.value;
         const password = form.password.value;
-        var res = await fetch("http://localhost:8000/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                email:email,
-                password:hashPassword(password),
-            }),
-        }); 
-        var json = await res.json();
-        if (res.status === 200) {
-            const data = json["data"];
-            sessionStorage.setItem("token", data.uid);
-            window.location.href = "/home";
-        } else {
-            setDetail(json.detail);
-            alert(json.detail);
-        } 
+        try {
+            const userData = await login(email, password);
+            saveUserData(userData); // Salvar os dados do usuário no cookie e o token
+            router.push("/-/home");
+        } catch (error: any) {
+            setDetail(error.message);
+        }
     }
+
+    useEffect(() => {
+        console.log(getToken());
+        if (getToken()) {
+            router.push("/home");
+        }
+    }, []);
 
     return (
         <div className="container">
@@ -44,7 +39,7 @@ export default function Login() {
                         </div>
                         <div className="card-body">
                             <form onSubmit={handleSubmit}>
-                                <Input label="Email" type="email" id="email" placeholder="Email" />    
+                                <Input label="Email" type="email" id="email" placeholder="Email" />
                                 <Input label="Password" type="password" id="password" placeholder="Password" />
                                 <Button type="submit" style="primary">
                                     Login

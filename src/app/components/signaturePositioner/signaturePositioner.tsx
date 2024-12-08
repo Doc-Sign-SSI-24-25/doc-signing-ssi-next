@@ -90,7 +90,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardBody } from '@docsign/app/components/ui/card';
 import Button from '@docsign/app/components/ui/button';
-import Slider from '../slider/slider';
+import Slider from '../ui/slider';
 
 // Types for better TypeScript support
 interface SignaturePosition {

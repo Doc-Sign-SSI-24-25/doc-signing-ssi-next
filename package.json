@@ -9,12 +9,16 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "jsonwebtoken": "^9.0.2",
     "next": "15.0.3",
+    "next-auth": "^5.0.0-beta.25",
+    "nookies": "^2.5.2",
     "pdfjs-dist": "^4.8.69",
     "react": "19.0.0-rc-66855b96-20241106",
     "react-dom": "19.0.0-rc-66855b96-20241106"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

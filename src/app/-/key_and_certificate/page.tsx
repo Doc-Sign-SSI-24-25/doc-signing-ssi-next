@@ -1,5 +1,6 @@
 'use client'
-import Button from '../components/ui/button';
+import { getUserData } from '@docsign/services/userServices';
+import Button from '../../components/ui/button';
 import styles from './page.module.css'
 import { useEffect, useState } from "react";
 
@@ -13,15 +14,13 @@ export default function KeyAndCertificate() {
     const [privateKey, setPrivateKey] = useState<ReceivedFile>({ filename: '', data: null });
     const [certificate, setCertificate] = useState<ReceivedFile>({ filename: '', data: null });
     const getKey = async () => {
-        var user_id = sessionStorage.getItem("token");
-        console.log(user_id);
         var res = await fetch("http://localhost:8000/get_keys", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                "user_id": sessionStorage.getItem("token"),
+                "user_id": getUserData().uid
             }),
         });
         var json = await res.json();
@@ -41,7 +40,7 @@ export default function KeyAndCertificate() {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                "user_id": sessionStorage.getItem("token"),
+                "user_id": getUserData().uid
             }),
         });
         var json = await res.json();

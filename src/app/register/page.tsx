@@ -1,7 +1,7 @@
 'use client';
 import { useState } from "react";
 import Button from "../components/ui/button";
-import { nameValidator, passwordValidator, emailValidator, hashPassword } from "../utils/util";
+import { nameValidator, passwordValidator, emailValidator, hashPassword } from "../../utils/util";
 
 export default function Register() {
     const [name, setName] = useState("");
