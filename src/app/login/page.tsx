@@ -1,9 +1,10 @@
 'use client'
-import {  useState } from "react";
+import { useState } from "react";
 import Input from "../components/ui/input";
 import Button from "../components/ui/button";
 import { useRouter } from "next/navigation";
 import { login, saveUserData } from "@docsign/services/authServices";
+import Detail from "../components/ui/detail";
 export default function Login() {
     const [detail, setDetail] = useState("");
     const router = useRouter();
@@ -18,6 +19,7 @@ export default function Login() {
             saveUserData(userData); // Salvar os dados do usuário no cookie e o token
             router.push("/-/home");
         } catch (error: any) {
+            console.error(error);
             setDetail(error.message);
         }
     }
@@ -37,7 +39,7 @@ export default function Login() {
                                 <Button type="submit" style="primary">
                                     Login
                                 </Button>
-                                {detail && <p>{detail}</p>}
+                                <Detail detail={detail} />
                                 <p>Don't have an account? <a href="/register">Register</a></p>
                             </form>
                         </div>

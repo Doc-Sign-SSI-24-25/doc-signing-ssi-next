@@ -122,7 +122,6 @@ function SignaturePositioner(){
 
         // Use PDF.js to load and render PDF
         const pdfjsLib = await import('pdfjs-dist');
-        console.log(pdfjsLib);
         // pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
         pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.min.mjs"
 
@@ -131,6 +130,7 @@ function SignaturePositioner(){
             reader.onload = async (e) => {
                 const typedArray = new Uint8Array(e.target!.result as ArrayBuffer);
                 const pdf = await pdfjsLib.getDocument(typedArray).promise;
+                console.log(pdf);
 
                 setPageCount(pdf.numPages);
                 setCurrentPage(1);

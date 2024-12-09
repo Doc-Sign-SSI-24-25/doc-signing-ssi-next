@@ -10,6 +10,10 @@ export const login = async (email: string, password: string): Promise<string> =>
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email, password: hashPassword(password) }),
     });
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.detail);
+    }
     // Certifique-se de que a API retorna o token.
     const json: ApiResponse = await response.json();
     const data = json.data;

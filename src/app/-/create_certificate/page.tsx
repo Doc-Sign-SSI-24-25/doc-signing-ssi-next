@@ -2,13 +2,13 @@
 import { useState } from "react";
 import Button from "../../components/ui/button";
 import { getUserData } from "@docsign/services/userServices";
+import Detail from "@docsign/app/components/ui/detail";
 
 export default function CreateCertificate() {
     const [message, setMessage] = useState('');
 
     async function createCertificate() {
         setMessage('');
-
         try {
             var res = await fetch('http://localhost:8000/create_certificate', {
                 method: 'POST',
@@ -25,7 +25,6 @@ export default function CreateCertificate() {
             }
 
             const json = await res.json();
-            console.log(json);
 
             // Cria um arquivo com a chave privada
             var file = new File([json.data.certificate], json.data.filename, { type: 'text/plain' });
@@ -46,7 +45,7 @@ export default function CreateCertificate() {
 
             <div id="result">
                 <a type="button" href="#" className="btn btn-outline-dark my-3 d-none" id="btn-result">Download Certificate</a>
-                <p className="text-info"> {message}</p>
+                <Detail detail={message} />
             </div>
         </>
     );

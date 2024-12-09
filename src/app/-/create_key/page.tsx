@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Button from "../../components/ui/button";
 import { getUserData } from "@docsign/services/userServices";
+import Detail from "@docsign/app/components/ui/detail";
 
 export default function Page() {
     const [message, setMessage] = useState('');
@@ -62,7 +63,7 @@ export default function Page() {
             <div id="result">
                 <a type="button" href="#" className="btn btn-outline-dark my-3 d-none" id="btn-result-private">Download Private Key</a>
                 <a type="button" href="#" className="btn btn-outline-dark my-3 d-none" id="btn-result-public">Download Public Key</a>
-                <p className="text-info"> {message}</p>
+                <Detail detail={message} /> 
             </div>
         </>
     );

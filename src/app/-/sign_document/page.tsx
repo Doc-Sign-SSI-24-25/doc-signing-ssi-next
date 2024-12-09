@@ -8,13 +8,16 @@ import { ReceivedFile } from "../../@types/types";
 import If from "@docsign/app/components/if";
 import { getUserData } from "@docsign/services/userServices";
 import Email from "@docsign/app/components/email/email";
+import Detail from "@docsign/app/components/ui/detail";
+import SignaturePositioner from "@docsign/app/components/signaturePositioner/signaturePositioner";
 
 export default function SignDocument() {
     // if (!useAuth()) return <p>Loading...</p>;
     const [message, setMessage] = useState('');
-    const [positions, setPositions] = useState([470, 840, 570, 640]); //Default values from API
+    // const [positions, setPositions] = useState([470, 840, 570, 640]); //Default values from API
     const [signedFile, setSignedFile] = useState<ReceivedFile | null>(null);
     const [showEmailSelector, setShowEmailSelector] = useState(false);
+    // const [showSignaturePositioner, setShowSignaturePositioner] = useState(false);
 
     const signDocument = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -46,7 +49,7 @@ export default function SignDocument() {
                 formData.append('message', form.message);
                 formData.append('emails', emails.join(','));
             }
-            const route = showEmailSelector ? 'sign_and_send_document' : 'sign_document';
+            const route = showEmailSelector ? 'sign_document_and_send' : 'sign_document';
             console.log(formData);
 
             var res = await fetch('http://localhost:8000/' + route, {
@@ -115,9 +118,9 @@ export default function SignDocument() {
         a.remove();
     }
 
-    const changePosition = (positions: number[]) => {
-        setPositions(positions);
-    }
+    // const changePosition = (positions: number[]) => {
+    //     setPositions(positions);
+    // }
 
     const [emails, setEmails] = useState<string[]>([]);
     const onSave = (email: string) => {
@@ -141,7 +144,11 @@ export default function SignDocument() {
                     <label htmlFor="sendEmail">Send by Email after signed: {showEmailSelector ? "Yes" : "No"}</label>
                     <input type="checkbox" className="form-check-input" name="sendEmail" id="sendEmail" role="switch" aria-checked="false" value={!showEmailSelector} onClick={() => setShowEmailSelector(!showEmailSelector)} />
                 </div>
-                {/* <SignaturePositioner  /> */}
+                {/* <div className="form-check form-switch">
+                    <label htmlFor="showPositioner">Show signature: {showEmailSelector ? "Yes" : "No"}</label>
+                    <input type="checkbox" className="form-check-input" name="showPositioner" id="showPositioner" role="switch" aria-checked="false" value={!showSignaturePositioner} onClick={() => setShowSignaturePositioner(!showSignaturePositioner)} />
+                </div> */}
+                {/* <If condition={showSignaturePositioner} then={<SignaturePositioner />} /> */}
                 <If condition={showEmailSelector}
                     then={<>
                         <Email />
@@ -159,7 +166,7 @@ export default function SignDocument() {
 
             <div id="result">
                 <Button id="btn-result" onClick={downloadFile} className="d-none">Download</Button>
-                <p className="text-info"> {message}</p>
+                <Detail detail={message} />
             </div>
         </>
     );

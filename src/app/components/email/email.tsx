@@ -11,7 +11,7 @@ export default function Email() {
                     className="form-control"
                     id="message"
                     name="message"
-                    placeholder="Mensagem"
+                    rows={5}
                     // value={props.message}
                     // onChange={props.onChangeMessage}
                 />
