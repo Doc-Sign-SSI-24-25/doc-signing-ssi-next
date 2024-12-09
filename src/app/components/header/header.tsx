@@ -4,11 +4,13 @@ import { useEffect, useState } from "react";
 import { getUserData } from "@docsign/services/authServices";
 import If from "@docsign/app/components/if";
 import { User } from "@docsign/app/@types/types";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
-    const doLogout = () => {
-        logout();
-        window.location.href = "/login";
+    const router = useRouter();
+    const doLogout = async () => {
+        await logout();
+        router.push('/login');
     }
     const [userData, setUserData] = useState<User | null>(null);
     useEffect(() => {
@@ -41,7 +43,7 @@ export default function Header() {
                         </ul>
                         <ul className="navbar-nav">
                             <li className="nav-item">
-                                <button className="nav-link" onClick={doLogout}>Logout</button>
+                                <button className="nav-link text-danger" onClick={doLogout}>Logout</button>
                             </li>
                         </ul> </>}
 

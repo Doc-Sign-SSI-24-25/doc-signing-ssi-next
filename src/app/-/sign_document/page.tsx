@@ -7,6 +7,7 @@ import { ReceivedFile } from "../../@types/types";
 // import SignaturePositioner from "../../components/signaturePositioner/signaturePositioner";
 import If from "@docsign/app/components/if";
 import { getUserData } from "@docsign/services/userServices";
+import Email from "@docsign/app/components/email/email";
 
 export default function SignDocument() {
     // if (!useAuth()) return <p>Loading...</p>;
@@ -41,12 +42,14 @@ export default function SignDocument() {
             formData.append('location', location);
             formData.append('user_id', user_id);
             if (showEmailSelector) {
+                formData.append('subject', form.subject);
+                formData.append('message', form.message);
                 formData.append('emails', emails.join(','));
             }
             const route = showEmailSelector ? 'sign_and_send_document' : 'sign_document';
             console.log(formData);
 
-            var res = await fetch('http://localhost:8000/'+route, {
+            var res = await fetch('http://localhost:8000/' + route, {
                 method: 'POST',
                 body: formData,
             });
@@ -118,7 +121,7 @@ export default function SignDocument() {
 
     const [emails, setEmails] = useState<string[]>([]);
     const onSave = (email: string) => {
-        setEmails([...emails, email]);        
+        setEmails([...emails, email]);
     }
     const onRemove = (index: number) => {
         setEmails(emails.filter((_, i) => i !== index));
@@ -135,17 +138,19 @@ export default function SignDocument() {
                 <Input type="text" name="reason" label="Reason" />
                 <Input type="text" name="location" label="Location" />
                 <div className="form-check form-switch">
-                    <label htmlFor="sendEmail">Send by Email after signed: {showEmailSelector?"Yes":"No"}</label>
+                    <label htmlFor="sendEmail">Send by Email after signed: {showEmailSelector ? "Yes" : "No"}</label>
                     <input type="checkbox" className="form-check-input" name="sendEmail" id="sendEmail" role="switch" aria-checked="false" value={!showEmailSelector} onClick={() => setShowEmailSelector(!showEmailSelector)} />
                 </div>
                 {/* <SignaturePositioner  /> */}
                 <If condition={showEmailSelector}
-                    then={<EmailSelector
-                        emails={emails}
-                        onSave={onSave}
-                        onRemove={onRemove}
-                        onEdit={onEdit}
-                    />}
+                    then={<>
+                        <Email />
+                        <EmailSelector
+                            emails={emails}
+                            onSave={onSave}
+                            onRemove={onRemove}
+                            onEdit={onEdit}
+                        /></>}
                 />
                 <If condition={!showEmailSelector}
                     then={<Button type="submit">Sign Document</Button>}

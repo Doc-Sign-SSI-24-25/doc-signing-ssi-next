@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import jwt from 'jsonwebtoken';
 
-const PUBLIC_ROUTES = ['/login', '/register', '/validate'];
+const PUBLIC_ROUTES = ['/','/login', '/register', '/validate'];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -29,11 +29,13 @@ export function middleware(request: NextRequest) {
     //formato de token inválido
     return NextResponse.redirect(new URL('/login', request.url));
   } else {
+    console.log('path: '+pathname);
+    // return NextResponse.next();
     if (pathname.includes('/-/')) {
       return NextResponse.next();
     }
     else
-      return NextResponse.redirect(new URL('/-/' + pathname, request.url));
+      return NextResponse.redirect(new URL('/-' + pathname, request.url));
   }
 
   // try {

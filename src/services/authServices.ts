@@ -20,8 +20,8 @@ export const login = async (email: string, password: string): Promise<string> =>
 };
 
 export const logout = async () => {
-    destroyCookie(null, "userData");
-    destroyCookie(null, "authToken");
+    destroyCookie(null, "userData", {path: "/"});
+    destroyCookie(null, "authToken" , {path: "/"});
 };
 
 export const saveUserData = (data: any) => {
@@ -55,7 +55,7 @@ export const getToken = () => {
 
 // Remover token
 export const removeToken = () => {
-    destroyCookie(null, "authToken");
+    destroyCookie(null, "authToken", {path: "/"});
 };
 
 // Verificar se o token é válido
@@ -76,11 +76,9 @@ export const isValidToken = (ctx?: any): boolean => {
         const cookies = parseCookies();
         token = cookies.authToken || null;
     }
-
     if (!token || typeof token !== "string") {
         return false;
     }
-
     return token.length === 24;
 };
 
@@ -113,6 +111,5 @@ export const getUserData = (ctx?: any): User | null => {
     } catch (error) {
         console.error("Error parsing user data", error);
         return null;
-    }
-    
+    }    
 };

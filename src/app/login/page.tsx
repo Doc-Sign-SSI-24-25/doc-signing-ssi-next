@@ -1,9 +1,9 @@
 'use client'
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import Input from "../components/ui/input";
 import Button from "../components/ui/button";
 import { useRouter } from "next/navigation";
-import { getToken, login, saveToken, saveUserData } from "@docsign/services/authServices";
+import { login, saveUserData } from "@docsign/services/authServices";
 export default function Login() {
     const [detail, setDetail] = useState("");
     const router = useRouter();
@@ -21,13 +21,6 @@ export default function Login() {
             setDetail(error.message);
         }
     }
-
-    useEffect(() => {
-        console.log(getToken());
-        if (getToken()) {
-            router.push("/home");
-        }
-    }, []);
 
     return (
         <div className="container">
