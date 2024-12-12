@@ -27,10 +27,8 @@
 }
 
 .main {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-  grid-row-start: 2;
+  display: grid;
+  place-items: center;
 }
 
 /* Enable hover only on non-touch devices */

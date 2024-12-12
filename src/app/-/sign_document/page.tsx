@@ -16,6 +16,7 @@ export default function SignDocument() {
     const [message, setMessage] = useState('');
     // const [positions, setPositions] = useState([470, 840, 570, 640]); //Default values from API
     const [signedFile, setSignedFile] = useState<ReceivedFile | null>(null);
+    const [fileHash, setFileHash] = useState<ReceivedFile | null>(null);
     const [showEmailSelector, setShowEmailSelector] = useState(false);
     // const [showSignaturePositioner, setShowSignaturePositioner] = useState(false);
 
@@ -85,6 +86,10 @@ export default function SignDocument() {
                 document:
                     `data:application/pdf;base64,${json.data.signed_document}`
             });
+            setFileHash({
+                filename: `${json.data.filename}.sha256`,
+                document: json.data.hash
+            });
         } catch (error) {
             setMessage(`${error}`);
             console.error('Error:', error);
@@ -92,7 +97,7 @@ export default function SignDocument() {
     }
 
     const downloadFile = () => {
-        if (!signedFile) {
+        if (!signedFile || !fileHash) {
             return;
         }
         // Decode from base64
@@ -106,16 +111,27 @@ export default function SignDocument() {
         // Gera uma URL temporária para o Blob
         const blobUrl = URL.createObjectURL(blob);
 
+        // criar o arquivo de hash .sha256
+        const hashBlob = new Blob([fileHash?.document], { type: "text/plain" });
+        const hashBlobUrl = URL.createObjectURL(hashBlob);
+
         // Exibe no navegador
         window.open(blobUrl);
 
         var url = URL.createObjectURL(blob);
+        var urlHash = URL.createObjectURL(hashBlob);
         var a = document.createElement('a');
+        var aHash = document.createElement('a');
         a.href = url;
+        aHash.href = urlHash;
         a.download = signedFile.filename;
+        aHash.download = fileHash.filename;
         a.click();
+        aHash.click();
         URL.revokeObjectURL(url);
+        URL.revokeObjectURL(urlHash);
         a.remove();
+        aHash.remove();
     }
 
     // const changePosition = (positions: number[]) => {

@@ -38,6 +38,9 @@ export default function Header() {
                                     <a className="nav-link" href="/-/create_certificate">Create Certificate</a>
                                 </li>
                                 <li className="nav-item">
+                                    <a className="nav-link" href="/-/create_key_and_certificate">Create Key and Certificate</a>
+                                </li>
+                                <li className="nav-item">
                                     <a className="nav-link" href="/-/sign_document">Sign Document</a>
                                 </li>
                                 <li className="nav-item">

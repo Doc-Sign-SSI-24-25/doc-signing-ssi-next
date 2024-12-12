@@ -33,9 +33,9 @@ export default function Register() {
                 },
                 body: body,
             });
-            console.log(response);
             if (response.ok) {
                 alert("User registered successfully");
+                window.location.href = "/login";
             } else {
                 alert("Failed to register user");
             }
@@ -90,6 +90,7 @@ export default function Register() {
                                 Submit
                             </Button>
                         </form>
+                        <a href="/login">Login</a>
                     </div>
                 </div>
             </div>

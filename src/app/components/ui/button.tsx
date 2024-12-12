@@ -15,7 +15,7 @@ export default function Button({
     className?: string;
     disabled?: boolean;
     id?: string;
-    type?: "button" | "submit";
+    type?: "button" | "submit" | "reset";
     style?: "primary" | "secondary" | "dark" | "danger";
     outline?: boolean;
 }>) {
