@@ -2,23 +2,17 @@
 import Button from "../../components/ui/button";
 import { useState } from "react";
 import Input from "../../components/ui/input";
-import EmailSelector from "@docsign/app/components/emailSelector";
 import { ReceivedFile } from "../../@types/types";
 // import SignaturePositioner from "../../components/signaturePositioner/signaturePositioner";
 import If from "@docsign/app/components/if";
 import { getUserData } from "@docsign/services/userServices";
-import Email from "@docsign/app/components/email/email";
 import Detail from "@docsign/app/components/ui/detail";
 import SignaturePositioner from "@docsign/app/components/signaturePositioner/signaturePositioner";
 
 export default function SignDocument() {
-    // if (!useAuth()) return <p>Loading...</p>;
     const [message, setMessage] = useState('');
-    // const [positions, setPositions] = useState([470, 840, 570, 640]); //Default values from API
     const [signedFile, setSignedFile] = useState<ReceivedFile | null>(null);
     const [fileHash, setFileHash] = useState<ReceivedFile | null>(null);
-    const [showEmailSelector, setShowEmailSelector] = useState(false);
-    // const [showSignaturePositioner, setShowSignaturePositioner] = useState(false);
 
     const signDocument = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -45,12 +39,8 @@ export default function SignDocument() {
             formData.append('reason', reason);
             formData.append('location', location);
             formData.append('user_id', user_id);
-            if (showEmailSelector) {
-                formData.append('subject', form.subject);
-                formData.append('message', form.message);
-                formData.append('emails', emails.join(','));
-            }
-            const route = showEmailSelector ? 'sign_document_and_send' : 'sign_document';
+
+            const route = 'sign_document';
             console.log(formData);
 
             var res = await fetch('http://localhost:8000/' + route, {
@@ -59,13 +49,10 @@ export default function SignDocument() {
             });
 
             if (!res.ok) {
-                // Tenta obter o erro detalhado do servidor
                 const errorData = await res.json();
                 console.error(errorData);
                 if (typeof errorData.detail !== 'string') {
-                    // Verifica se o erro é um array de erros
                     if (Array.isArray(errorData.detail)) {
-                        //Se sim, obtem a mensagem dos erros
                         const errors = errorData.detail.map((error: any) => error.msg).join(', ');
                         console.error(errors);
                         throw new Error(errors);
@@ -100,22 +87,16 @@ export default function SignDocument() {
         if (!signedFile || !fileHash) {
             return;
         }
-        // Decode from base64
         const base64Data = signedFile.document as string;
-        // Cria um objeto Blob a partir do Base64
         const byteCharacters = atob(base64Data.split(',')[1]);
         const byteNumbers = Array.from(byteCharacters, char => char.charCodeAt(0));
         const byteArray = new Uint8Array(byteNumbers);
         const blob = new Blob([byteArray], { type: "application/pdf" });
 
-        // Gera uma URL temporária para o Blob
         const blobUrl = URL.createObjectURL(blob);
-
-        // criar o arquivo de hash .sha256
         const hashBlob = new Blob([fileHash?.document], { type: "text/plain" });
         const hashBlobUrl = URL.createObjectURL(hashBlob);
 
-        // Exibe no navegador
         window.open(blobUrl);
 
         var url = URL.createObjectURL(blob);
@@ -134,21 +115,6 @@ export default function SignDocument() {
         aHash.remove();
     }
 
-    // const changePosition = (positions: number[]) => {
-    //     setPositions(positions);
-    // }
-
-    const [emails, setEmails] = useState<string[]>([]);
-    const onSave = (email: string) => {
-        setEmails([...emails, email]);
-    }
-    const onRemove = (index: number) => {
-        setEmails(emails.filter((_, i) => i !== index));
-    }
-    const onEdit = (index: number, value: string) => {
-        setEmails(emails.map((email, i) => i === index ? value : email));
-    }
-
     return (
         <>
             <h1>Sign Document</h1>
@@ -156,28 +122,7 @@ export default function SignDocument() {
                 <input type="file" id="file" className="form-control my-3" name="file" accept=".pdf, .doc, .docx" />
                 <Input type="text" name="reason" label="Reason" />
                 <Input type="text" name="location" label="Location" />
-                <div className="form-check form-switch">
-                    <label htmlFor="sendEmail">Send by Email after signed: {showEmailSelector ? "Yes" : "No"}</label>
-                    <input type="checkbox" className="form-check-input" name="sendEmail" id="sendEmail" role="switch" aria-checked="false" value={!showEmailSelector} onClick={() => setShowEmailSelector(!showEmailSelector)} />
-                </div>
-                {/* <div className="form-check form-switch">
-                    <label htmlFor="showPositioner">Show signature: {showEmailSelector ? "Yes" : "No"}</label>
-                    <input type="checkbox" className="form-check-input" name="showPositioner" id="showPositioner" role="switch" aria-checked="false" value={!showSignaturePositioner} onClick={() => setShowSignaturePositioner(!showSignaturePositioner)} />
-                </div> */}
-                {/* <If condition={showSignaturePositioner} then={<SignaturePositioner />} /> */}
-                <If condition={showEmailSelector}
-                    then={<>
-                        <Email />
-                        <EmailSelector
-                            emails={emails}
-                            onSave={onSave}
-                            onRemove={onRemove}
-                            onEdit={onEdit}
-                        /></>}
-                />
-                <If condition={!showEmailSelector}
-                    then={<Button type="submit">Sign Document</Button>}
-                    else={<Button type="submit">Sign Document and Send By Email</Button>} />
+                <Button type="submit">Sign Document</Button>
             </form>
 
             <div id="result">
