@@ -46,6 +46,12 @@ export default function Header() {
                                 <li className="nav-item">
                                     <a className="nav-link" href="/-/key_and_certificate">My Keys and Certificate</a>
                                 </li>
+                                <li className="nav-item">
+                                    <a className="nav-link" href="/-/send_email">Send Email</a>
+                                </li>
+                                <li className="nav-item">
+                                    <a className="nav-link" href="/-/sign_document_and_send">Sign Document and Send</a>
+                                </li>
                             </ul>
                             <ul className="navbar-nav">
                                 <li className="nav-item">
