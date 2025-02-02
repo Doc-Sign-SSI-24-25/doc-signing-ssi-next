@@ -3,6 +3,7 @@ import { useState } from "react";
 import Button from "../../components/ui/button";
 import { getUserData } from "@docsign/services/userServices";
 import Detail from "@docsign/app/components/ui/detail";
+import { API_URL } from "@docsign/config";
 
 export default function Page() {
     const [message, setMessage] = useState('');
@@ -21,7 +22,7 @@ export default function Page() {
         setMessage('');
 
         try {
-            var res = await fetch('http://localhost:8000/create_key', {
+            var res = await fetch(`${API_URL}/create_key`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

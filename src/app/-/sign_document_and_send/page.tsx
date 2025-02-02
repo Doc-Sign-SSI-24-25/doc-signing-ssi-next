@@ -6,6 +6,7 @@ import Input from "../../components/ui/input";
 import EmailSelector from "@docsign/app/components/emailSelector";
 import Detail from "@docsign/app/components/ui/detail";
 import { getUserData } from "@docsign/services/userServices";
+import { API_URL } from "@docsign/config";
 
 export default function SignDocumentAndSend() {
     const [emails, setEmails] = useState<string[]>([]);
@@ -57,7 +58,7 @@ export default function SignDocumentAndSend() {
                 formData.append('positions', positions);
             }
 
-            const res = await fetch('http://localhost:8000/sign_document_and_send', {
+            const res = await fetch(API_URL+'/sign_document_and_send', {
                 method: 'POST',
                 body: formData,
             });

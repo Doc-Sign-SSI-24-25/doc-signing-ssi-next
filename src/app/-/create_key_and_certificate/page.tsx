@@ -3,6 +3,7 @@ import { useState } from "react";
 import Button from "@docsign/app/components/ui/button";
 import Detail from "@docsign/app/components/ui/detail";
 import { getUserData } from "@docsign/services/userServices";
+import { API_URL } from "@docsign/config";
 
 export default function Page() {
     const [message, setMessage] = useState('');
@@ -21,7 +22,7 @@ export default function Page() {
         setMessage('');
 
         try {
-            var res = await fetch('http://localhost:8000/create_key_and_certificate', {
+            var res = await fetch(API_URL+'/create_key_and_certificate', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

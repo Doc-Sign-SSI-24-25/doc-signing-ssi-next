@@ -3,6 +3,7 @@ import { useState } from "react";
 import Button from "../../components/ui/button";
 import { getUserData } from "@docsign/services/userServices";
 import Detail from "@docsign/app/components/ui/detail";
+import { API_URL } from "@docsign/config";
 
 export default function CreateCertificate() {
     const [message, setMessage] = useState('');
@@ -10,12 +11,19 @@ export default function CreateCertificate() {
     async function createCertificate() {
         setMessage('');
         try {
-            var res = await fetch('http://localhost:8000/create_certificate', {
+            const key_e = document.getElementById('private_key') as HTMLInputElement;
+            if (!key_e.files || !key_e.files[0]) {
+                setMessage('Private Key is required');
+                throw new Error('Private Key is required');
+            }
+            const key = key_e.files[0];
+            const formData = new FormData();
+            formData.append('private_key', key);
+            formData.append('user_id', getUserData().uid);
+
+            var res = await fetch(API_URL+'/create_certificate', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ user_id: getUserData().uid })
+                body: formData,
             });
 
             if (!res.ok) {
@@ -44,6 +52,8 @@ export default function CreateCertificate() {
             <Button onClick={createCertificate}>Generate Certificate</Button>
 
             <div id="result">
+                <label htmlFor="private_key">Private Key:</label>
+                <input type="file" id="private_key" name="private_key" accept=".pem" required />
                 <a type="button" href="#" className="btn btn-outline-dark my-3 d-none" id="btn-result">Download Certificate</a>
                 <Detail detail={message} />
             </div>

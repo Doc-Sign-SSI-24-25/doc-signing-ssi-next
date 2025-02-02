@@ -8,6 +8,7 @@ import If from "@docsign/app/components/if";
 import { getUserData } from "@docsign/services/userServices";
 import Detail from "@docsign/app/components/ui/detail";
 import SignaturePositioner from "@docsign/app/components/signaturePositioner/signaturePositioner";
+import { API_URL } from "@docsign/config";
 
 export default function SignDocument() {
     const [message, setMessage] = useState('');
@@ -29,13 +30,19 @@ export default function SignDocument() {
                 window.location.href = '/login';
             }
             const file = form.file.files[0];
+            const key = form.key.files[0];
 
             if (!file) {
                 console.error('File is required');
                 throw new Error('File is required');
             }
+            if (!key) {
+                console.error('Key is required');
+                throw new Error('Key is required');
+            }
             const formData = new FormData();
             formData.append('file', file);
+            formData.append('private_key', key);
             formData.append('reason', reason);
             formData.append('location', location);
             formData.append('user_id', user_id);
@@ -43,7 +50,7 @@ export default function SignDocument() {
             const route = 'sign_document';
             console.log(formData);
 
-            var res = await fetch('http://localhost:8000/' + route, {
+            var res = await fetch(API_URL + '/'+route, {
                 method: 'POST',
                 body: formData,
             });
@@ -119,7 +126,10 @@ export default function SignDocument() {
         <>
             <h1>Sign Document</h1>
             <form onSubmit={signDocument}>
+                <label htmlFor="file">File</label>
                 <input type="file" id="file" className="form-control my-3" name="file" accept=".pdf, .doc, .docx" />
+                <label htmlFor="key">Private Key</label>
+                <input type="file" id="key" className="form-control my-3" name="key" accept=".pem" />
                 <Input type="text" name="reason" label="Reason" />
                 <Input type="text" name="location" label="Location" />
                 <Button type="submit">Sign Document</Button>

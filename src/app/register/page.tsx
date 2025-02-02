@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Button from "../components/ui/button";
 import { nameValidator, passwordValidator, emailValidator, hashPassword } from "../../utils/util";
+import { API_URL } from "@docsign/config";
 
 export default function Register() {
     const [name, setName] = useState("");
@@ -26,7 +27,7 @@ export default function Register() {
         }
         var body: string = JSON.stringify({ "name": name, "email": email, "password": hashPassword(password) });
         try {
-            const response = await fetch("http://localhost:8000/register", {
+            const response = await fetch(`${API_URL}/register`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

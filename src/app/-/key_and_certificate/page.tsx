@@ -3,6 +3,7 @@ import { getUserData } from '@docsign/services/userServices';
 import Button from '../../components/ui/button';
 import styles from './page.module.css'
 import { useEffect, useState } from "react";
+import { API_URL } from '@docsign/config';
 
 type ReceivedFile = {
     filename: string;
@@ -11,22 +12,12 @@ type ReceivedFile = {
 
 export default function KeyAndCertificate() {
     const [publicKey, setPublicKey] = useState<ReceivedFile>({ filename: '', data: null });
-    const [privateKey, setPrivateKey] = useState<ReceivedFile>({ filename: '', data: null });
     const [certificate, setCertificate] = useState<ReceivedFile>({ filename: '', data: null });
     const getKey = async () => {
-        var res = await fetch("http://localhost:8000/get_keys", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                "user_id": getUserData().uid
-            }),
-        });
+        var res = await fetch(`${API_URL}/get_keys?user_id=${getUserData().uid}`);
         var json = await res.json();
         if (res.status === 200) {
             var data = json.data;
-            setPrivateKey({ filename: data.private_key_filename, data: data.private_key });
             setPublicKey({ filename: data.public_key_filename, data: data.public_key });
         } else {
             alert(json.detail);
@@ -34,7 +25,7 @@ export default function KeyAndCertificate() {
     }
 
     const getCertificate = async () => {
-        var res = await fetch("http://localhost:8000/get_certificate", {
+        var res = await fetch(`${API_URL}/get_certificate`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -80,12 +71,6 @@ export default function KeyAndCertificate() {
                             className="btn btn-primary mx-3">
                             Download Public Key</Button> :
                         <p>No public key found</p>
-                    }
-                    {
-                        privateKey.data ?
-                            <Button onClick={() => downloadFile(privateKey)}
-                                className="btn btn-primary mx-3">
-                                Download Private Key</Button> : <p>No private key found</p>
                     }
                 </div>
             </div>
