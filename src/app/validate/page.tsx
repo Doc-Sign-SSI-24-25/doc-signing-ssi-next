@@ -26,8 +26,15 @@ export default function Page() {
             setDetail("Select a file");
             return;
         }
+        const hash = form.hash.files[0];
+        if (!hash) {
+            setDetail("Select a hash file");
+            return;
+        }
         const formData = new FormData();
         formData.append("file_content", file);
+        formData.append("file_hash", hash);
+        console.log(hash);
         try {
             const response = await fetch(`${API_URL}/validate`, {
                 method: "POST",
@@ -85,6 +92,8 @@ export default function Page() {
                     <form onSubmit={handleSubmit}>
                         <label htmlFor="file">Upload the File</label>
                         <input type="file" className="form-control" id="file" name="file" accept=".pdf" />
+                        <label htmlFor="hash">Hash</label>
+                        <input type="file" className="form-control" id="hash" name="hash" accept=".txt,.sha256" />
                         <Button type="submit" style="primary">
                             Send
                         </Button>
